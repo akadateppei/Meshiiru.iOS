@@ -12,6 +12,7 @@ class ScheduleSelectTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UINib(nibName: "ScheduleSelectTableViewCell", bundle: nil), forCellReuseIdentifier: "ScheduleSelectTableViewCell")
     }
 
     // MARK: - Table view data source
@@ -27,7 +28,9 @@ class ScheduleSelectTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleSelectTableViewCell") as! ScheduleSelectTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleSelectTableViewCell") as? ScheduleSelectTableViewCell else {
+            return UITableViewCell()
+        }
         guard let date = Calendar.current.date(byAdding: .day, value: indexPath.row, to: Date()) else {
             return UITableViewCell()
         }

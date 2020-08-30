@@ -45,16 +45,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!,
-              withError error: Error!) {
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
       if let error = error {
         if (error as NSError).code == GIDSignInErrorCode.hasNoAuthInKeychain.rawValue {
           print("The user has not signed in before or they have since signed out.")
+
         } else {
           print("\(error.localizedDescription)")
         }
         return
       }
+        print("ログイン成功してるで")
 //      // Perform any operations on signed in user here.
 //      let userId = user.userID                  // For client-side use only!
 //      let idToken = user.authentication.idToken // Safe to send to the server
@@ -63,6 +64,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
 //      let familyName = user.profile.familyName
 //      let email = user.profile.email
 //      // ...
+        let vc = ScheduleSelectTableViewController()
+        vc.modalPresentationStyle = .fullScreen
+        UIApplication.shared.windows.first?.rootViewController?.present(vc, animated: true, completion: nil)
     }
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,

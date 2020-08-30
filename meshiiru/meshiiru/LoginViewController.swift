@@ -18,7 +18,6 @@ class LoginViewController: UIViewController {
 
         // Automatically sign in the user.
         GIDSignIn.sharedInstance()?.restorePreviousSignIn()
-
     }
     
 
