@@ -1,0 +1,6 @@
+framework module Pods_meshiiru {
+  umbrella header "Pods-meshiiru-umbrella.h"
+
+  export *
+  module * { export * }
+}
