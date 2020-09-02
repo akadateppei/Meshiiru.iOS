@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Override point for customization after application launch.
         GIDSignIn.sharedInstance().clientID = "897033838765-08e2bq8opjgvtou9j1rffjacsoqv78nt.apps.googleusercontent.com"
         GIDSignIn.sharedInstance().delegate = self
+        let scopes = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar"]
+        for scope in scopes {
+            GIDSignIn.sharedInstance()?.scopes.append(scope)
+        }
         return true
     }
 
@@ -56,14 +60,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return
       }
         print("ログイン成功してるで")
-//      // Perform any operations on signed in user here.
-//      let userId = user.userID                  // For client-side use only!
-//      let idToken = user.authentication.idToken // Safe to send to the server
-//      let fullName = user.profile.name
-//      let givenName = user.profile.givenName
-//      let familyName = user.profile.familyName
-//      let email = user.profile.email
-//      // ...
+//        getEvents(token: user.authentication.accessToken)
+        createCalendar(token: user.authentication.accessToken)
         let vc = ScheduleSelectTableViewController()
         vc.modalPresentationStyle = .fullScreen
         UIApplication.shared.windows.first?.rootViewController?.present(vc, animated: true, completion: nil)
@@ -74,6 +72,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
       // Perform any operations when the user disconnects from app here.
       // ...
     }
+    private func getEvents(token: String) {
+      // イベントリストを取得するURL
+      let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/primary")
+      let config = URLSessionConfiguration.default
+      let session = URLSession(configuration: config)
+      // ヘッダに情報を設定
+      var request = URLRequest(url: url!)
+      request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+      // API叩く
+      let task = session.dataTask(with: request) { (data, response, error) in
+        if let data = data {
+            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+            print(json)
+        }
+      }
+      task.resume()
+    }
+
+    private func createCalendar(token: String) {
+        guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars") else {
+            print("Couldn't create new calendar.")
+            return
+        }
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let params: [String: Any] = [
+            "summary": "meshiiru"
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                let resultData = String(data: data!, encoding: .utf8)!
+                print("result:\(resultData)")
+                print("response:\(response)")
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
+    }
+
 
 
 }
