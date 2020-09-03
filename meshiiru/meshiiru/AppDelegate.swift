@@ -154,6 +154,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         // API叩く
         let task = session.dataTask(with: request) { (data, response, error) in
+          // パース
           if let data = data {
             let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
             guard let res = json, let items = res["items"] as? [[String: Any]] else {
@@ -163,9 +164,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
                 guard let calendarName = calendarList["summary"] as? String else {
                     return
                 }
+                // カレンダーの名前がmeshiiruならidを保存 & カレンダーを持っていることも保存
                 if calendarName == "meshiiru" {
                     if let calendarId = calendarList["id"] {
                         UserDefaults.standard.set(calendarId, forKey: "calendarId")
+                        UserDefaults.standard.set(true, forKey: "hasCalendar")
                     }
                 }
             }
