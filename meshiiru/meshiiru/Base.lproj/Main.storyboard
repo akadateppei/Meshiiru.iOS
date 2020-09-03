@@ -11,7 +11,9 @@
         <scene sceneID="Rdo-DY-B7a">
             <objects>
                 <navigationController modalPresentationStyle="fullScreen" id="Q8Y-Su-wCX" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="rfx-N9-4b0"/>
+                    <navigationItem key="navigationItem" id="rfx-N9-4b0">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="U1l-X5-e3F"/>
+                    </navigationItem>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Nhf-s7-FYY">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -75,7 +77,13 @@
                             <outlet property="delegate" destination="fEw-I3-QxO" id="htR-nG-QS4"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="aaa" id="TC0-Qg-WvW"/>
+                    <navigationItem key="navigationItem" title="aaa" id="TC0-Qg-WvW">
+                        <barButtonItem key="rightBarButtonItem" title="hogehoge" id="SXJ-fU-kuY">
+                            <connections>
+                                <action selector="onTapHoge:" destination="fEw-I3-QxO" id="ROA-m5-xDF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63j-rb-9KG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // Override point for customization after application launch.
         GIDSignIn.sharedInstance().clientID = "897033838765-08e2bq8opjgvtou9j1rffjacsoqv78nt.apps.googleusercontent.com"
         GIDSignIn.sharedInstance().delegate = self
-        let scopes = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar"]
+        let scopes = ["https://www.googleapis.com/auth/calendar.readonly", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar.events"]
         for scope in scopes {
             GIDSignIn.sharedInstance()?.scopes.append(scope)
         }
@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // userDefaultにトークンを保存する
         let userDefaults = UserDefaults.standard
         userDefaults.set(user.authentication.accessToken, forKey: "token")
-//        createCalendar(token: user.authentication.accessToken)
+        fetchCalendarList(token: user.authentication.accessToken)
         UIApplication.shared.windows.first?.rootViewController?.performSegue(withIdentifier: "toHome", sender: nil)
     }
 
@@ -116,6 +116,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             print("Error:\(error)")
             return
         }
+    }
+
+    private func getAuthentication(token: String) {
+        guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/meshiiru/acl") else {
+            print("Couldn't get authentication.")
+            return
+        }
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let params: [String: Any] = [
+            "role": "writer"
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                let resultData = String(data: data!, encoding: .utf8)!
+                print("result:\(resultData)")
+                print("response:\(response)")
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
+    }
+
+    private func fetchCalendarList(token: String) {
+        let url = URL(string: "https://www.googleapis.com/calendar/v3/users/me/calendarList")
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        // ヘッダに情報を設定
+        var request = URLRequest(url: url!)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        // API叩く
+        let task = session.dataTask(with: request) { (data, response, error) in
+          if let data = data {
+            do {
+                let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+                for calendarList: [String: Any] in json!["items"] as! [[String: Any]] {
+                    print(calendarList["summary"])
+                }
+            } catch {
+                print("error")
+            }
+          }
+        }
+        task.resume()
     }
 }
 

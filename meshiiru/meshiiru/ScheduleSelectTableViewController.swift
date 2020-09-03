@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 class ScheduleSelectTableViewController: UITableViewController {
     //MARK: properties
@@ -14,6 +15,7 @@ class ScheduleSelectTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "ScheduleSelectTableViewCell", bundle: nil), forCellReuseIdentifier: "ScheduleSelectTableViewCell")
+        
     }
 
     // MARK: - Table view data source
@@ -47,5 +49,40 @@ class ScheduleSelectTableViewController: UITableViewController {
         let applicationHeight = screenHeight - statusBarHeight
 
         return applicationHeight/7
+    }
+
+    @IBAction func onTapHoge(_ sender: Any) {
+        createEvent()
+    }
+
+    private func createEvent() {
+        guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/meshiiru/events") else {
+            print("Couldn't create new calendar.")
+            return
+        }
+        let user = GIDSignIn.sharedInstance()?.currentUser
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        print(user?.authentication.accessToken)
+        request.addValue("Bearer \(user?.authentication.accessToken)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let params: [String: Any] = [
+            "end.date": "2020/9/3",
+            "summary": "赤田"
+
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                let resultData = String(data: data!, encoding: .utf8)!
+                print("result:\(resultData)")
+                print("response:\(response)")
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
     }
 }
