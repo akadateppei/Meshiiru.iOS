@@ -61,10 +61,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
       }
         print("ログイン成功してるで")
 //        getEvents(token: user.authentication.accessToken)
-        createCalendar(token: user.authentication.accessToken)
-        let vc = ScheduleSelectTableViewController()
-        vc.modalPresentationStyle = .fullScreen
-        UIApplication.shared.windows.first?.rootViewController?.present(vc, animated: true, completion: nil)
+        // userDefaultにトークンを保存する
+        let userDefaults = UserDefaults.standard
+        userDefaults.set(user.authentication.accessToken, forKey: "token")
+//        createCalendar(token: user.authentication.accessToken)
+        UIApplication.shared.windows.first?.rootViewController?.performSegue(withIdentifier: "toHome", sender: nil)
     }
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,
@@ -116,8 +117,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             return
         }
     }
-
-
-
 }
 
