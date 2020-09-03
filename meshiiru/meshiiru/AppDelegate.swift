@@ -155,13 +155,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         // API叩く
         let task = session.dataTask(with: request) { (data, response, error) in
           if let data = data {
-            do {
-                let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
-                for calendarList: [String: Any] in json!["items"] as! [[String: Any]] {
-                    print(calendarList["summary"])
+            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+            guard let res = json, let items = res["items"] as? [[String: Any]] else {
+                return
+            }
+            for calendarList: [String: Any] in items {
+                guard let calendarName = calendarList["summary"] as? String else {
+                    return
                 }
-            } catch {
-                print("error")
+                if calendarName == "meshiiru" {
+                    if let calendarId = calendarList["id"] {
+                        UserDefaults.standard.set(calendarId, forKey: "calendarId")
+                    }
+                }
             }
           }
         }
