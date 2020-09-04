@@ -56,6 +56,11 @@ class ScheduleSelectTableViewController: UITableViewController {
         return applicationHeight/7
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)
+        cell?.backgroundColor = UIColor(red: 80/255, green: 215/255, blue: 255/255, alpha: 1)
+    }
+
     @IBAction func onTapHoge(_ sender: Any) {
         createEvent()
     }

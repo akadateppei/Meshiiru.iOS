@@ -11,6 +11,7 @@ import UIKit
 class ScheduleSelectTableViewCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var weekdayLabel: UILabel!
+    @IBOutlet weak var meshiiruCheckImage: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()

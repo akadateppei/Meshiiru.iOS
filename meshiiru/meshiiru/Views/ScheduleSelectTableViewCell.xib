@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -31,8 +31,14 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="meshiiru_check" translatesAutoresizingMaskIntoConstraints="NO" id="LW5-U7-ssB">
+                        <rect key="frame" x="283" y="8" width="28" height="28"/>
+                    </imageView>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="bottom" secondItem="LW5-U7-ssB" secondAttribute="bottom" constant="8" id="29N-hM-05J"/>
+                    <constraint firstItem="LW5-U7-ssB" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="CjP-Nq-Eu1"/>
+                    <constraint firstAttribute="trailing" secondItem="LW5-U7-ssB" secondAttribute="trailing" constant="8" id="fdF-9D-dn0"/>
                     <constraint firstItem="2Cb-Ns-mNA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="kyr-kK-day"/>
                     <constraint firstItem="Ks1-iE-wfP" firstAttribute="leading" secondItem="2Cb-Ns-mNA" secondAttribute="trailing" constant="8" id="sgr-AA-wYB"/>
                     <constraint firstItem="Ks1-iE-wfP" firstAttribute="leading" secondItem="2Cb-Ns-mNA" secondAttribute="trailing" constant="8" id="yd9-PQ-lrf"/>
@@ -45,9 +51,13 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="dateLabel" destination="2Cb-Ns-mNA" id="L1x-NN-s0c"/>
+                <outlet property="meshiiruCheckImage" destination="LW5-U7-ssB" id="Xna-ig-5v8"/>
                 <outlet property="weekdayLabel" destination="Ks1-iE-wfP" id="uUQ-uJ-iFS"/>
             </connections>
-            <point key="canvasLocation" x="254" y="110"/>
+            <point key="canvasLocation" x="253.62318840579712" y="109.82142857142857"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="meshiiru_check" width="84.5" height="87.5"/>
+    </resources>
 </document>
