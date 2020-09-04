@@ -11,11 +11,15 @@ import GoogleSignIn
 
 class ScheduleSelectTableViewController: UITableViewController {
     //MARK: properties
+    let userDefault = UserDefaults()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "ScheduleSelectTableViewCell", bundle: nil), forCellReuseIdentifier: "ScheduleSelectTableViewCell")
-        
+        if let userName = userDefault.string(forKey: "userName") {
+            self.navigationItem.title = userName
+        }
     }
 
     // MARK: - Table view data source
@@ -43,10 +47,11 @@ class ScheduleSelectTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let screenHeight = UIScreen.main.bounds.size.height
-        guard let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height else {
+        guard let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height,
+            let navigationBarHeight = self.navigationController?.navigationBar.frame.size.height else {
             return screenHeight/8
         }
-        let applicationHeight = screenHeight - statusBarHeight
+        let applicationHeight = screenHeight - statusBarHeight - navigationBarHeight
 
         return applicationHeight/7
     }

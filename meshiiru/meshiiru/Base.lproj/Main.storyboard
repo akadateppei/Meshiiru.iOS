@@ -84,10 +84,28 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="navigationItem" destination="TC0-Qg-WvW" id="25x-HT-Yx9"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="63j-rb-9KG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="281" y="-638"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="lVz-hH-Hsw">
+            <objects>
+                <viewController id="mm6-1v-dWT" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GI0-FH-Guu">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="tnL-sL-TQf"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7qn-lR-Feq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-555" y="110"/>
         </scene>
     </scenes>
 </document>
