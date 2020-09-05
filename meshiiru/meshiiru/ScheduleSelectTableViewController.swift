@@ -32,11 +32,10 @@ class ScheduleSelectTableViewController: UITableViewController {
                     if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
                         self.selectedRows.append(dayInterval)
                         print(self.selectedRows)
-                        self.setupRows()
                     }
-
                 }
             }
+            self.setupRows()
         }
     }
 
@@ -96,10 +95,13 @@ class ScheduleSelectTableViewController: UITableViewController {
     }
 
     private func setupRows() {
-        for selectedRow in selectedRows {
-            let indexPath = IndexPath(row: selectedRow, section: 0)
-            DispatchQueue.main.async {
-                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        for row in 0..<7 {
+            if !selectedRows.contains(row){
+                print("ふくまれないので洗濯します")
+                let indexPath = IndexPath(row: row, section: 0)
+                DispatchQueue.main.async {
+                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+                }
             }
         }
     }
