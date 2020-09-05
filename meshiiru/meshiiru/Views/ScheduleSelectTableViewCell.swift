@@ -13,17 +13,6 @@ class ScheduleSelectTableViewCell: UITableViewCell {
     @IBOutlet weak var weekdayLabel: UILabel!
     @IBOutlet weak var meshiiruCheckImage: UIImageView!
 
-    var selectionColor: UIColor {
-        set {
-            let view = UIView()
-            view.backgroundColor = newValue
-            self.selectedBackgroundView = view
-        }
-        get {
-            return self.selectedBackgroundView?.backgroundColor ?? UIColor.clear
-        }
-    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -31,7 +20,7 @@ class ScheduleSelectTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        selectionColor = selected ? UIColor(red: 80/255, green: 215/255, blue: 255/255, alpha: 1) : UIColor.white
+        meshiiruCheckImage.image = selected ? UIImage(named: "meshiiru_deselected") : UIImage(named: "meshiiru_selected")
         // Configure the view for the selected state
     }
 
@@ -51,14 +40,6 @@ class ScheduleSelectTableViewCell: UITableViewCell {
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
         return formatter.string(from: date)
-    }
-
-    func switchBackgroudColor() {
-        if self.isSelected == true {
-            self.backgroundColor = UIColor(red: 80/255, green: 215/255, blue: 255/255, alpha: 1)
-        } else {
-            self.backgroundColor = UIColor.white
-        }
     }
 
 }

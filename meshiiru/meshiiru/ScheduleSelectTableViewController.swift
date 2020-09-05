@@ -31,7 +31,6 @@ class ScheduleSelectTableViewController: UITableViewController {
                 if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
                     if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
                         self.selectedRows.append(dayInterval)
-                        print(self.selectedRows)
                     }
                 }
             }
@@ -76,32 +75,15 @@ class ScheduleSelectTableViewController: UITableViewController {
         return applicationHeight/7
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if selectedRows.firstIndex(of: indexPath.row) == nil {
-            selectedRows.append(indexPath.row)
-        }
-        print(selectedRows)
-    }
-
-    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if let firstIndex = selectedRows.firstIndex(of: indexPath.row) {
-            selectedRows.remove(at: firstIndex)
-        }
-        print(selectedRows)
-    }
-
     @IBAction func onTapHoge(_ sender: Any) {
         createEvent()
     }
 
     private func setupRows() {
-        for row in 0..<7 {
-            if !selectedRows.contains(row){
-                print("ふくまれないので洗濯します")
-                let indexPath = IndexPath(row: row, section: 0)
-                DispatchQueue.main.async {
-                    self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-                }
+        for row in selectedRows {
+            let indexPath = IndexPath(row: row, section: 0)
+            DispatchQueue.main.async {
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }
         }
     }
