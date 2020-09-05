@@ -139,7 +139,6 @@ class GoogleCalendarService {
             }
         }
         task.resume()
-        print(meshiiranDates)
     }
 
     func stringFromDate(date: Date) -> String {

@@ -23,7 +23,24 @@ class ScheduleSelectTableViewController: UITableViewController {
         }
         self.tableView.allowsMultipleSelection = true
 
-        GoogleCalendarService().getEvents()
+        GoogleCalendarService().getEvents(){ meshiiranList in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let today = Date()
+            for meshiiranDay in meshiiranList {
+                if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
+                    if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
+                        self.selectedRows.append(dayInterval)
+                        print(self.selectedRows)
+                        self.setupRows()
+                    }
+
+                }
+            }
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
     }
 
     // MARK: - Table view data source
@@ -76,6 +93,15 @@ class ScheduleSelectTableViewController: UITableViewController {
 
     @IBAction func onTapHoge(_ sender: Any) {
         createEvent()
+    }
+
+    private func setupRows() {
+        for selectedRow in selectedRows {
+            let indexPath = IndexPath(row: selectedRow, section: 0)
+            DispatchQueue.main.async {
+                self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+            }
+        }
     }
 
     private func createEvent() {
