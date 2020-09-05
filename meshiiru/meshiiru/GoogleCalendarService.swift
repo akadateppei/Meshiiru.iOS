@@ -97,8 +97,9 @@ class GoogleCalendarService {
         }
     }
 
-    func getEvents(completion: @escaping ([String]) ->Void) {
+    func getEvents(completion1: @escaping([String]) -> Void, completion2: @escaping ([String]) ->Void) {
         var meshiiranDates: [String] = []
+        var meshiiranIds: [String] = []
         guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let calendarId = UserDefaults().string(forKey: "calendarId") else {
             return
         }
@@ -128,17 +129,46 @@ class GoogleCalendarService {
                 let events = json["items"] as! [[String: Any]]
                 for event in events {
                     print(event)
-                    if event["summary"] as! String == UserDefaults().string(forKey: "userName") {
+                    if event["summary"] as? String == UserDefaults().string(forKey: "userName") {
                         let startItems = event["start"] as! [String: Any]
                         if startItems["date"] != nil {
                             meshiiranDates.append(startItems["date"] as! String)
                         }
                     }
+                    if let id = event["id"] as? String {
+                        meshiiranIds.append(id)
+                    }
                 }
-                completion(meshiiranDates)
+                completion1(meshiiranIds)
+                completion2(meshiiranDates)
             }
         }
         task.resume()
+    }
+
+    func deleteCalendar(id: String) {
+        guard let calendarId = UserDefaults().string(forKey: "calendarId"),
+            let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events/%@", calendarId, id)),
+            let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken else {
+            print("Couldn't create new calendar.")
+            return
+        }
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "Delete"
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                let resultData = String(data: data!, encoding: .utf8)!
+                print("result:\(resultData)")
+                print("response:\(response)")
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
     }
 
     func stringFromDate(date: Date) -> String {

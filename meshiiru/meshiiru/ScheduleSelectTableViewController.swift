@@ -11,9 +11,10 @@ import GoogleSignIn
 
 class ScheduleSelectTableViewController: UITableViewController {
     //MARK: properties
+    @IBOutlet weak private var completeButton: UIBarButtonItem!
     let userDefault = UserDefaults()
     var selectedRows: [Int] = []
-
+    var selectedEventIds: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +24,10 @@ class ScheduleSelectTableViewController: UITableViewController {
         }
         self.tableView.allowsMultipleSelection = true
 
-        GoogleCalendarService().getEvents(){ meshiiranList in
+        GoogleCalendarService().getEvents(completion1: {ids in
+                self.selectedEventIds = ids
+            print(ids)
+        }){ meshiiranList in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let today = Date()
@@ -75,8 +79,11 @@ class ScheduleSelectTableViewController: UITableViewController {
         return applicationHeight/7
     }
 
-    @IBAction func onTapHoge(_ sender: Any) {
-        createEvent()
+    @IBAction func onTapCompleteButton(_ sender: Any) {
+        let service = GoogleCalendarService()
+        for id in selectedEventIds {
+            service.deleteCalendar(id: id)
+        }
     }
 
     private func setupRows() {

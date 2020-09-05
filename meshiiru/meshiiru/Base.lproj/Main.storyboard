@@ -80,11 +80,12 @@
                     <navigationItem key="navigationItem" title="aaa" id="TC0-Qg-WvW">
                         <barButtonItem key="rightBarButtonItem" title="hogehoge" id="SXJ-fU-kuY">
                             <connections>
-                                <action selector="onTapHoge:" destination="fEw-I3-QxO" id="ROA-m5-xDF"/>
+                                <action selector="onTapCompleteButton:" destination="fEw-I3-QxO" id="3fo-nV-Tuc"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="completeButton" destination="SXJ-fU-kuY" id="srg-6g-e3A"/>
                         <outlet property="navigationItem" destination="TC0-Qg-WvW" id="25x-HT-Yx9"/>
                     </connections>
                 </tableViewController>
