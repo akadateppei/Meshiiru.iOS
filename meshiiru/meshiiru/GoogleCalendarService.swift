@@ -97,7 +97,8 @@ class GoogleCalendarService {
         }
     }
 
-    func getEvents() {
+    func getEvents(completion: @escaping ([String]) ->Void) {
+        var meshiiranDates: [String] = []
         guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let calendarId = UserDefaults().string(forKey: "calendarId") else {
             return
         }
@@ -121,16 +122,28 @@ class GoogleCalendarService {
         // API叩く
         let task = session.dataTask(with: request) { (data, response, error) in
             if let data = data {
-                let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
-                print(json)
+                guard let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any] else {
+                    return
+                }
+                let events = json["items"] as! [[String: Any]]
+                for event in events {
+                    print(event)
+                    if event["summary"] as! String == UserDefaults().string(forKey: "userName") {
+                        let startItems = event["start"] as! [String: Any]
+                        if startItems["date"] != nil {
+                            meshiiranDates.append(startItems["date"] as! String)
+                        }
+                    }
+                }
+                completion(meshiiranDates)
             }
         }
         task.resume()
+        print(meshiiranDates)
     }
 
     func stringFromDate(date: Date) -> String {
         let formatter = ISO8601DateFormatter()
-        print(formatter.string(from: date))
         return formatter.string(from: date)
     }
 }
