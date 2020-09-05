@@ -10,6 +10,12 @@ import Foundation
 import GoogleSignIn
 
 class GoogleCalendarService {
+    private let session = { () -> URLSession in
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        return session
+    }()
+
     func fetchCalendarList(token: String) {
         let url = URL(string: "https://www.googleapis.com/calendar/v3/users/me/calendarList")
         let config = URLSessionConfiguration.default
@@ -115,8 +121,6 @@ class GoogleCalendarService {
             return
         }
         print(url)
-        let config = URLSessionConfiguration.default
-        let session = URLSession(configuration: config)
         // ヘッダに情報を設定
         var request = URLRequest(url: url)
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -127,6 +131,8 @@ class GoogleCalendarService {
                     return
                 }
                 let events = json["items"] as! [[String: Any]]
+                print("events")
+                print(events)
                 for event in events {
                     print(event)
                     if event["summary"] as? String == UserDefaults().string(forKey: "userName") {
@@ -159,6 +165,44 @@ class GoogleCalendarService {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
             let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                let resultData = String(data: data!, encoding: .utf8)!
+                print("result:\(resultData)")
+                print("response:\(response)")
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
+    }
+
+    func createEvent(date: String) {
+        guard let calendarId = UserDefaults().string(forKey: "calendarId"),
+            let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events", calendarId)) else {
+            print("Couldn't create new calendar.")
+            return
+        }
+        guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let userName = UserDefaults().string(forKey: "userName") else {
+            print("Don't have access token.")
+            return
+        }
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let params: [String: Any] = [
+            "start": [
+                "date": date
+            ],
+            "end": [
+                "date": date
+            ],
+            "summary": userName
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
                 print("result:\(resultData)")
                 print("response:\(response)")

@@ -71,13 +71,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
             userDefaults.set(userName, forKey: "userName")
         }
         // カレンダーIDが保存されていなければリストから取得
+        calendarService.fetchCalendarList(token: user.authentication.accessToken)
+        // リストにIDがなければ作成か共有
         if userDefaults.object(forKey: "calendarId") == nil {
-            calendarService.fetchCalendarList(token: user.authentication.accessToken)
-            // リストにIDがなければ作成か共有
-            if userDefaults.object(forKey: "calendarId") == nil {
-                // 作成画面へ
-                return
-            }
+            // 作成画面へ
+            return
         }
         // 予定作成画面へ
         UIApplication.shared.windows.first?.rootViewController?.performSegue(withIdentifier: "toHome", sender: nil)

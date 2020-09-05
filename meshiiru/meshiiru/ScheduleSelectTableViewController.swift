@@ -34,7 +34,8 @@ class ScheduleSelectTableViewController: UITableViewController {
             for meshiiranDay in meshiiranList {
                 if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
                     if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
-                        self.selectedRows.append(dayInterval)
+                        print(String(dayInterval + 1) + "aaaaaa")
+                        self.selectedRows.append(dayInterval + 1)
                     }
                 }
             }
@@ -80,9 +81,22 @@ class ScheduleSelectTableViewController: UITableViewController {
     }
 
     @IBAction func onTapCompleteButton(_ sender: Any) {
+        print(selectedRows)
+        guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
+            return
+        }
         let service = GoogleCalendarService()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
         for id in selectedEventIds {
             service.deleteCalendar(id: id)
+        }
+        for indexPath in selectedIndexPaths {
+            guard let date = Calendar.current.date(byAdding: .day, value: indexPath.row, to: Date()) else {
+                return
+            }
+            let dateString = formatter.string(from: date)
+            service.createEvent(date: dateString)
         }
     }
 
@@ -92,37 +106,6 @@ class ScheduleSelectTableViewController: UITableViewController {
             DispatchQueue.main.async {
                 self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }
-        }
-    }
-
-    private func createEvent() {
-        guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/meshiiru/events") else {
-            print("Couldn't create new calendar.")
-            return
-        }
-        let user = GIDSignIn.sharedInstance()?.currentUser
-        let request = NSMutableURLRequest(url: url)
-        request.httpMethod = "POST"
-        print(user?.authentication.accessToken)
-        request.addValue("Bearer \(user?.authentication.accessToken)", forHTTPHeaderField: "Authorization")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let params: [String: Any] = [
-            "end.date": "2020/9/3",
-            "summary": "赤田"
-
-        ]
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
-                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
-                let resultData = String(data: data!, encoding: .utf8)!
-                print("result:\(resultData)")
-                print("response:\(response)")
-
-            })
-            task.resume()
-        }catch{
-            print("Error:\(error)")
-            return
         }
     }
 }
