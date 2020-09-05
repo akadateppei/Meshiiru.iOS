@@ -21,7 +21,6 @@ class ScheduleSelectTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         meshiiruCheckImage.image = selected ? UIImage(named: "meshiiru_deselected") : UIImage(named: "meshiiru_selected")
-        // Configure the view for the selected state
     }
 
     func configureCell(date: Date) {
