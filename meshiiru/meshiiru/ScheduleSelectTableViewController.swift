@@ -20,6 +20,7 @@ class ScheduleSelectTableViewController: UITableViewController {
         if let userName = userDefault.string(forKey: "userName") {
             self.navigationItem.title = userName
         }
+        self.tableView.allowsMultipleSelection = true
     }
 
     // MARK: - Table view data source
@@ -54,11 +55,6 @@ class ScheduleSelectTableViewController: UITableViewController {
         let applicationHeight = screenHeight - statusBarHeight - navigationBarHeight
 
         return applicationHeight/7
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.backgroundColor = UIColor(red: 80/255, green: 215/255, blue: 255/255, alpha: 1)
     }
 
     @IBAction func onTapHoge(_ sender: Any) {
