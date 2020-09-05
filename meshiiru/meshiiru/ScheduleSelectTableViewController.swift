@@ -12,6 +12,7 @@ import GoogleSignIn
 class ScheduleSelectTableViewController: UITableViewController {
     //MARK: properties
     let userDefault = UserDefaults()
+    var selectedRows: [Int] = []
 
 
     override func viewDidLoad() {
@@ -55,6 +56,20 @@ class ScheduleSelectTableViewController: UITableViewController {
         let applicationHeight = screenHeight - statusBarHeight - navigationBarHeight
 
         return applicationHeight/7
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if selectedRows.firstIndex(of: indexPath.row) == nil {
+            selectedRows.append(indexPath.row)
+        }
+        print(selectedRows)
+    }
+
+    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let firstIndex = selectedRows.firstIndex(of: indexPath.row) {
+            selectedRows.remove(at: firstIndex)
+        }
+        print(selectedRows)
     }
 
     @IBAction func onTapHoge(_ sender: Any) {

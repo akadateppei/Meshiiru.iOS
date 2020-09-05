@@ -31,7 +31,6 @@ class ScheduleSelectTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        print(selected)
         selectionColor = selected ? UIColor(red: 80/255, green: 215/255, blue: 255/255, alpha: 1) : UIColor.white
         // Configure the view for the selected state
     }
@@ -45,7 +44,6 @@ class ScheduleSelectTableViewCell: UITableViewCell {
         let formatter: DateFormatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.dateFormat = "M/d"
-        print(formatter.string(from: date))
         return formatter.string(from: date)
     }
 
