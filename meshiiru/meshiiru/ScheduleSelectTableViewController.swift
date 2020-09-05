@@ -22,6 +22,8 @@ class ScheduleSelectTableViewController: UITableViewController {
             self.navigationItem.title = userName
         }
         self.tableView.allowsMultipleSelection = true
+
+        GoogleCalendarService().getEvents()
     }
 
     // MARK: - Table view data source

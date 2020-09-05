@@ -19,25 +19,25 @@ class GoogleCalendarService {
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         // API叩く
         let task = session.dataTask(with: request) { (data, response, error) in
-          // パース
-          if let data = data {
-            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
-            guard let res = json, let items = res["items"] as? [[String: Any]] else {
-                return
-            }
-            for calendarList: [String: Any] in items {
-                guard let calendarName = calendarList["summary"] as? String else {
+            // パース
+            if let data = data {
+                let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+                guard let res = json, let items = res["items"] as? [[String: Any]] else {
                     return
                 }
-                // カレンダーの名前がmeshiiruならidを保存 & カレンダーを持っていることも保存
-                if calendarName == "meshiiru" {
-                    guard let calendarId = calendarList["id"] else {
+                for calendarList: [String: Any] in items {
+                    guard let calendarName = calendarList["summary"] as? String else {
                         return
                     }
-                    UserDefaults.standard.set(calendarId, forKey: "calendarId")
+                    // カレンダーの名前がmeshiiruならidを保存 & カレンダーを持っていることも保存
+                    if calendarName == "meshiiru" {
+                        guard let calendarId = calendarList["id"] else {
+                            return
+                        }
+                        UserDefaults.standard.set(calendarId, forKey: "calendarId")
+                    }
                 }
             }
-          }
         }
         task.resume()
     }
@@ -45,8 +45,8 @@ class GoogleCalendarService {
     func getAuthentication() {
         guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/meshiiru/acl"),
             let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken else {
-            print("Couldn't get authentication.")
-            return
+                print("Couldn't get authentication.")
+                return
         }
         let request = NSMutableURLRequest(url: url)
         request.httpMethod = "POST"
@@ -57,7 +57,7 @@ class GoogleCalendarService {
         ]
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
-                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+            let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
                 print("result:\(resultData)")
                 print("response:\(response)")
@@ -84,7 +84,7 @@ class GoogleCalendarService {
         ]
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
-                let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+            let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
                 print("result:\(resultData)")
                 print("response:\(response)")
@@ -97,21 +97,40 @@ class GoogleCalendarService {
         }
     }
 
-    func getEvents(token: String) {
-      // イベントリストを取得するURL
-      let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars/primary")
-      let config = URLSessionConfiguration.default
-      let session = URLSession(configuration: config)
-      // ヘッダに情報を設定
-      var request = URLRequest(url: url!)
-      request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-      // API叩く
-      let task = session.dataTask(with: request) { (data, response, error) in
-        if let data = data {
-            let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
-            print(json)
+    func getEvents() {
+        guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let calendarId = UserDefaults().string(forKey: "calendarId") else {
+            return
         }
-      }
-      task.resume()
+        guard let minDate = Calendar.current.date(byAdding: .day, value: 0, to: Date()),
+            let maxDate = Calendar.current.date(byAdding: .day, value: 6, to: Date()) else {
+                return
+        }
+
+        let minDateString = stringFromDate(date: minDate)
+        let maxDateString = stringFromDate(date: maxDate)
+        // イベントリストを取得するURL
+        guard let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events?timeMin=%@&timeMax=%@", calendarId, minDateString, maxDateString)) else {
+            return
+        }
+        print(url)
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
+        // ヘッダに情報を設定
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        // API叩く
+        let task = session.dataTask(with: request) { (data, response, error) in
+            if let data = data {
+                let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
+                print(json)
+            }
+        }
+        task.resume()
+    }
+
+    func stringFromDate(date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        print(formatter.string(from: date))
+        return formatter.string(from: date)
     }
 }
