@@ -82,14 +82,14 @@ class ScheduleSelectTableViewController: UITableViewController {
 
     @IBAction func onTapCompleteButton(_ sender: Any) {
         print(selectedRows)
-        guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
-            return
-        }
         let service = GoogleCalendarService()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         for id in selectedEventIds {
             service.deleteCalendar(id: id)
+        }
+        guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
+            return
         }
         for indexPath in selectedIndexPaths {
             guard let date = Calendar.current.date(byAdding: .day, value: indexPath.row, to: Date()) else {
