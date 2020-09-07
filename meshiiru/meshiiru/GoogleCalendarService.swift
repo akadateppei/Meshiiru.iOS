@@ -162,6 +162,7 @@ class GoogleCalendarService {
                 print(resultData)
             })
             task.resume()
+            Thread.sleep(forTimeInterval: 0.5)
         }
         completion()
     }

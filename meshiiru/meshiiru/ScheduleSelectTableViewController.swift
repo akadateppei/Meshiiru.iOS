@@ -79,6 +79,10 @@ class ScheduleSelectTableViewController: UITableViewController {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
+            service.deleteEvents(ids: Array(meshiiranList.keys)) { () -> Void in
+                self.getEvents()
+                return
+            }
             return
         }
         // 予定作成
@@ -95,6 +99,7 @@ class ScheduleSelectTableViewController: UITableViewController {
         }
         // 予定削除
         var idsForDelete: [String] = []
+        print(meshiiranList.values)
         for row in meshiiranList.values {
             let indexPath = IndexPath(row: row, section: 0)
             if !selectedIndexPaths.contains(indexPath) {
