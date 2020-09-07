@@ -85,7 +85,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         calendarService.fetchCalendarList(token: user.authentication.accessToken)
         // リストにIDがなければ作成か共有
         if userDefaults.object(forKey: "calendarId") == nil {
-            // 作成画面へ
+            // TODO:作成画面へ
             return
         }
         // 予定作成画面へ
