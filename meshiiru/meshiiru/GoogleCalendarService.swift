@@ -109,8 +109,10 @@ class GoogleCalendarService {
         guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let calendarId = UserDefaults().string(forKey: "calendarId") else {
             return
         }
-        guard let minDate = Calendar.current.date(byAdding: .day, value: 0, to: Date()),
-            let maxDate = Calendar.current.date(byAdding: .day, value: 6, to: Date()) else {
+        let calendar = Calendar.current
+        let date = Date()
+        guard let minDate = calendar.date(byAdding: .day, value: 0, to: calendar.startOfDay(for: date)),
+            let maxDate = calendar.date(byAdding: .day, value: 6, to: calendar.startOfDay(for: date)) else {
                 return
         }
 

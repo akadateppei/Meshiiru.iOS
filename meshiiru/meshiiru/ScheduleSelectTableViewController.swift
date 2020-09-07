@@ -30,12 +30,11 @@ class ScheduleSelectTableViewController: UITableViewController {
         }){ meshiiranList in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            let today = Date()
+            let today = Calendar.current.startOfDay(for: Date())
             for meshiiranDay in meshiiranList {
                 if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
                     if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
-                        print(String(dayInterval + 1) + "aaaaaa")
-                        self.selectedRows.append(dayInterval + 1)
+                        self.selectedRows.append(dayInterval)
                     }
                 }
             }
