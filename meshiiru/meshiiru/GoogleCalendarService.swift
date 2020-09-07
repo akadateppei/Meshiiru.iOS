@@ -99,9 +99,8 @@ class GoogleCalendarService {
         }
     }
 
-    func getEvents(completion1: @escaping([String]) -> Void, completion2: @escaping ([String]) ->Void) {
-        var meshiiranDates: [String] = []
-        var meshiiranIds: [String] = []
+    func getEvents(completion: @escaping([String: String]) -> Void) {
+        var meshiiranList: [String: String] = [:]
         guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken, let calendarId = UserDefaults().string(forKey: "calendarId") else {
             return
         }
@@ -131,43 +130,40 @@ class GoogleCalendarService {
                 for event in events {
                     if event["summary"] as? String == UserDefaults().string(forKey: "userName") {
                         let startItems = event["start"] as! [String: Any]
-                        if startItems["date"] != nil {
-                            meshiiranDates.append(startItems["date"] as! String)
+                        if startItems["date"] != nil, let id = event["id"] as? String {
+                            meshiiranList.updateValue(startItems["date"] as! String, forKey: id)
                         }
                     }
-                    if let id = event["id"] as? String {
-                        meshiiranIds.append(id)
-                    }
                 }
-                completion1(meshiiranIds)
-                completion2(meshiiranDates)
+                completion(meshiiranList)
             }
         }
         task.resume()
     }
 
-    func deleteCalendar(id: String) {
+    func deleteEvents(ids: [String], completion: () -> Void ) {
         guard let calendarId = UserDefaults().string(forKey: "calendarId"),
-            let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events/%@", calendarId, id)),
             let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken else {
-            print("Couldn't create new calendar.")
+            print("Couldn't get calendarId or access token.")
             return
         }
-        let request = NSMutableURLRequest(url: url)
-        request.httpMethod = "Delete"
-        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        print("delete a calendar id of " + id)
-        do {
+        for id in ids {
+            guard let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events/%@", calendarId, id)) else {
+                print("Couldn't create URL.")
+                continue
+            }
+            let request = NSMutableURLRequest(url: url)
+            request.httpMethod = "Delete"
+            request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            print("delete a calendar id of " + id)
             let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
                 print(resultData)
             })
             task.resume()
-        }catch{
-            print("error: delete")
-            return
         }
+        completion()
     }
 
     func createEvent(date: String) {

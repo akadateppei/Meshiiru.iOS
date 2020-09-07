@@ -13,8 +13,7 @@ class ScheduleSelectTableViewController: UITableViewController {
     //MARK: properties
     @IBOutlet weak private var completeButton: UIBarButtonItem!
     let userDefault = UserDefaults()
-    var selectedRows: [Int] = []
-    var selectedEventIds: [String] = []
+    var meshiiranList = [String: Int]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,50 +78,73 @@ class ScheduleSelectTableViewController: UITableViewController {
         let service = GoogleCalendarService()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        print(selectedEventIds)
-        for id in selectedEventIds {
-            service.deleteCalendar(id: id)
-            Thread.sleep(forTimeInterval: 1.0)
-        }
         guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
             return
         }
+        // 予定作成
         for indexPath in selectedIndexPaths {
-            guard let date = Calendar.current.date(byAdding: .day, value: indexPath.row, to: Date()) else {
-                return
+            if meshiiranList.allKeysForValue(value: indexPath.row) == [] { //　元から選択されてない時
+                // 予定を追加
+                guard let date = Calendar.current.date(byAdding: .day, value: indexPath.row, to: Calendar.current.startOfDay(for: Date())) else {
+                    return
+                }
+                let dateString = formatter.string(from: date)
+                service.createEvent(date: dateString)
             }
-            let dateString = formatter.string(from: date)
-            service.createEvent(date: dateString)
             Thread.sleep(forTimeInterval: 1.0)
         }
-        getEvents()
+        // 予定削除
+        var idsForDelete: [String] = []
+        for row in meshiiranList.values {
+            let indexPath = IndexPath(row: row, section: 0)
+            if !selectedIndexPaths.contains(indexPath) {
+                if let idForDelete = meshiiranList.keyForValue(value: indexPath.row) {
+                    print(idForDelete + "を消すよ")
+                    idsForDelete.append(idForDelete)
+                }
+            }
+        }
+        service.deleteEvents(ids: idsForDelete) { () -> Void in
+            Thread.sleep(forTimeInterval: 0.5)
+            self.getEvents()
+            return
+        }
     }
 
     private func getEvents(){
-        GoogleCalendarService().getEvents(completion1: {ids in
-                self.selectedEventIds = ids
-            print(ids)
-        }){ meshiiranList in
+        meshiiranList = [:]
+        GoogleCalendarService().getEvents(){ meshiiranList in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let today = Calendar.current.startOfDay(for: Date())
-            for meshiiranDay in meshiiranList {
-                if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
-                    if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
-                        self.selectedRows.append(dayInterval)
+            for (meshiiranId, meshiiranDate) in meshiiranList {
+                if let meshiiranDay = dateFormatter.date(from: meshiiranDate) {
+                    if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDay)).day {
+                        self.meshiiranList.updateValue(dayInterval, forKey: meshiiranId)
                     }
                 }
             }
             self.setupRows()
+            print(self.meshiiranList)
         }
     }
 
     private func setupRows() {
-        for row in selectedRows {
+        for (_, row) in meshiiranList {
             let indexPath = IndexPath(row: row, section: 0)
             DispatchQueue.main.async {
                 self.tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
             }
         }
+    }
+}
+
+extension Dictionary where Value: Equatable {
+    func allKeysForValue(value: Value) -> [Key] {
+        return self.filter({ $0.1 == value }).map({ $0.0 })
+        // return self.flatMap({ $0.1 == value ? $0.0 : nil }) // こっちでもok
+    }
+    func keyForValue(value: Value) -> Key? {
+        return allKeysForValue(value: value).first
     }
 }
