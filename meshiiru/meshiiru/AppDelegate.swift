@@ -32,6 +32,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        // typeをチェック
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            let webpageURL = userActivity.webpageURL!
+            if !handleUniversalLink(URL: webpageURL) {
+                // コンテンツをアプリで開けない場合は、Safariに戻す
+                UIApplication.shared.open(webpageURL)
+                return false
+            }
+        }
+        return true
+    }
+
     @available(iOS 9.0, *)
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any]) -> Bool {
       return GIDSignIn.sharedInstance().handle(url)
@@ -59,8 +72,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         return
       }
         print("ログイン成功してるで")
-//        getEvents(token: user.authentication.accessToken)
-        // userDefaultにトークンを保存する
         let calendarService = GoogleCalendarService()
         let userDefaults = UserDefaults.standard
         // ユーザネームが保存されていなければ保存
@@ -79,6 +90,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, GIDSignInDelegate {
         }
         // 予定作成画面へ
         UIApplication.shared.windows.first?.rootViewController?.performSegue(withIdentifier: "toHome", sender: nil)
+    }
+
+    private func handleUniversalLink(URL url: URL) -> Bool {
+        // TODO:modeがshareなら権限付与、addCalendarならカレンダーリストにmeshiiruを追加
+        guard let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: true)?.queryItems,
+            let mail = queryItems.first(where: { $0.name == "mail" })?.value,
+            let calendarId = queryItems.first(where: { $0.name == "calendarId" })?.value else {
+                return false
+        }
+        let service = GoogleCalendarService()
+        // aclで権限付与してあげる
+        service.addUser(email: mail, calendarId: calendarId)
+        return true
     }
 
     func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!,

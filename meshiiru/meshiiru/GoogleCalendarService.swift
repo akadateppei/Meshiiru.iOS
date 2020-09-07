@@ -74,6 +74,36 @@ class GoogleCalendarService {
         }
     }
 
+    func addUser(email: String, calendarId: String) {
+        guard let token = GIDSignIn.sharedInstance()?.currentUser.authentication.accessToken,
+            let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/acl", calendarId)) else {
+            return
+        }
+
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let params: [String: Any] = [
+            "role": "writer",
+            "scope": [
+                "type": "user",
+                "value": email,
+            ]
+        ]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+            let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
+                // 画面遷移の処理
+
+            })
+            task.resume()
+        }catch{
+            print("Error:\(error)")
+            return
+        }
+    }
+
     func createCalendar(token: String) {
         guard let url = URL(string: "https://www.googleapis.com/calendar/v3/calendars") else {
             print("Couldn't create new calendar.")

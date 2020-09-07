@@ -19,11 +19,14 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>meshiiru.app</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.897033838765-08e2bq8opjgvtou9j1rffjacsoqv78nt</string>
+				<string>meshiiru-app</string>
 			</array>
 		</dict>
 	</array>
