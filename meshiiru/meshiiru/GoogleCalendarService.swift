@@ -65,8 +65,6 @@ class GoogleCalendarService {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
             let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
-                print("result:\(resultData)")
-                print("response:\(response)")
 
             })
             task.resume()
@@ -92,8 +90,6 @@ class GoogleCalendarService {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
             let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
-                print("result:\(resultData)")
-                print("response:\(response)")
 
             })
             task.resume()
@@ -112,7 +108,7 @@ class GoogleCalendarService {
         let calendar = Calendar.current
         let date = Date()
         guard let minDate = calendar.date(byAdding: .day, value: 0, to: calendar.startOfDay(for: date)),
-            let maxDate = calendar.date(byAdding: .day, value: 6, to: calendar.startOfDay(for: date)) else {
+            let maxDate = calendar.date(byAdding: .day, value: 6, to: calendar.nextDay(for: date)) else {
                 return
         }
 
@@ -122,7 +118,6 @@ class GoogleCalendarService {
         guard let url = URL(string: String(format: "https://www.googleapis.com/calendar/v3/calendars/%@/events?timeMin=%@&timeMax=%@", calendarId, minDateString, maxDateString)) else {
             return
         }
-        print(url)
         // ヘッダに情報を設定
         var request = URLRequest(url: url)
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -133,10 +128,7 @@ class GoogleCalendarService {
                     return
                 }
                 let events = json["items"] as! [[String: Any]]
-                print("events")
-                print(events)
                 for event in events {
-                    print(event)
                     if event["summary"] as? String == UserDefaults().string(forKey: "userName") {
                         let startItems = event["start"] as! [String: Any]
                         if startItems["date"] != nil {
@@ -165,16 +157,15 @@ class GoogleCalendarService {
         request.httpMethod = "Delete"
         request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        print("delete a calendar id of " + id)
         do {
             let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
-                print("result:\(resultData)")
-                print("response:\(response)")
-
+                print(resultData)
             })
             task.resume()
         }catch{
-            print("Error:\(error)")
+            print("error: delete")
             return
         }
     }
@@ -206,8 +197,6 @@ class GoogleCalendarService {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
                 let task:URLSessionDataTask = URLSession.shared.dataTask(with: request as URLRequest, completionHandler: {(data,response,error) -> Void in
                 let resultData = String(data: data!, encoding: .utf8)!
-                print("result:\(resultData)")
-                print("response:\(response)")
 
             })
             task.resume()
@@ -220,5 +209,15 @@ class GoogleCalendarService {
     func stringFromDate(date: Date) -> String {
         let formatter = ISO8601DateFormatter()
         return formatter.string(from: date)
+    }
+}
+
+extension Calendar {
+    func nextDay(for date:Date) -> Date {
+        return move(date, byDays: 1)
+    }
+
+    func move(_ date:Date, byDays days:Int) -> Date {
+        return self.date(byAdding: .day, value: days, to: startOfDay(for: date))!
     }
 }

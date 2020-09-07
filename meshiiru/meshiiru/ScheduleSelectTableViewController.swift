@@ -26,22 +26,7 @@ class ScheduleSelectTableViewController: UITableViewController {
 
         completeButton.isEnabled = false
 
-        GoogleCalendarService().getEvents(completion1: {ids in
-                self.selectedEventIds = ids
-            print(ids)
-        }){ meshiiranList in
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let today = Calendar.current.startOfDay(for: Date())
-            for meshiiranDay in meshiiranList {
-                if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
-                    if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
-                        self.selectedRows.append(dayInterval)
-                    }
-                }
-            }
-            self.setupRows()
-        }
+        getEvents()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -91,12 +76,13 @@ class ScheduleSelectTableViewController: UITableViewController {
 
     @IBAction func onTapCompleteButton(_ sender: Any) {
         completeButton.isEnabled = false
-        print(selectedRows)
         let service = GoogleCalendarService()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+        print(selectedEventIds)
         for id in selectedEventIds {
             service.deleteCalendar(id: id)
+            Thread.sleep(forTimeInterval: 1.0)
         }
         guard let selectedIndexPaths = tableView.indexPathsForSelectedRows else {
             return
@@ -107,6 +93,27 @@ class ScheduleSelectTableViewController: UITableViewController {
             }
             let dateString = formatter.string(from: date)
             service.createEvent(date: dateString)
+            Thread.sleep(forTimeInterval: 1.0)
+        }
+        getEvents()
+    }
+
+    private func getEvents(){
+        GoogleCalendarService().getEvents(completion1: {ids in
+                self.selectedEventIds = ids
+            print(ids)
+        }){ meshiiranList in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let today = Calendar.current.startOfDay(for: Date())
+            for meshiiranDay in meshiiranList {
+                if let meshiiranDate = dateFormatter.date(from: meshiiranDay) {
+                    if let dayInterval = (Calendar.current.dateComponents([.day], from: today, to: meshiiranDate)).day {
+                        self.selectedRows.append(dayInterval)
+                    }
+                }
+            }
+            self.setupRows()
         }
     }
 

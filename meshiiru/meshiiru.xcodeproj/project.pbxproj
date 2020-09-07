@@ -119,6 +119,7 @@
 		C09D403924FA174500FFAE93 = {
 			isa = PBXGroup;
 			children = (
+				C0158C292501451A009104C5 /* Models */,
 				C03D934A24FB781F005DC047 /* meshiiru.Bridging-Header.h */,
 				C09D404424FA174500FFAE93 /* meshiiru */,
 				C09D405B24FA174600FFAE93 /* meshiiruTests */,
@@ -146,7 +147,6 @@
 				C09D404B24FA174500FFAE93 /* Main.storyboard */,
 				C0730B9C24FB81F700C4B48F /* LoginViewController.swift */,
 				C004804C24FA279300E646E6 /* ScheduleSelectTableViewController.swift */,
-				C0158C292501451A009104C5 /* Models */,
 				C09D404E24FA174600FFAE93 /* Assets.xcassets */,
 				C004804724FA21C600E646E6 /* Views */,
 				C09D405024FA174600FFAE93 /* LaunchScreen.storyboard */,
