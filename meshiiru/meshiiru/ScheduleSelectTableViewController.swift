@@ -24,6 +24,8 @@ class ScheduleSelectTableViewController: UITableViewController {
         }
         self.tableView.allowsMultipleSelection = true
 
+        completeButton.isEnabled = false
+
         GoogleCalendarService().getEvents(completion1: {ids in
                 self.selectedEventIds = ids
             print(ids)
@@ -79,7 +81,16 @@ class ScheduleSelectTableViewController: UITableViewController {
         return applicationHeight/7
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        completeButton.isEnabled = true
+    }
+
+    override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        completeButton.isEnabled = true
+    }
+
     @IBAction func onTapCompleteButton(_ sender: Any) {
+        completeButton.isEnabled = false
         print(selectedRows)
         let service = GoogleCalendarService()
         let formatter = DateFormatter()

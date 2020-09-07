@@ -54,7 +54,7 @@
             </objects>
             <point key="canvasLocation" x="-1338" y="-638"/>
         </scene>
-        <!--aaa-->
+        <!--Schedule Select Table View Controller-->
         <scene sceneID="BRK-Md-sgG">
             <objects>
                 <tableViewController modalPresentationStyle="fullScreen" id="fEw-I3-QxO" customClass="ScheduleSelectTableViewController" customModule="meshiiru" customModuleProvider="target" sceneMemberID="viewController">
@@ -77,15 +77,15 @@
                             <outlet property="delegate" destination="fEw-I3-QxO" id="htR-nG-QS4"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="aaa" id="TC0-Qg-WvW">
-                        <barButtonItem key="rightBarButtonItem" title="hogehoge" id="SXJ-fU-kuY">
+                    <navigationItem key="navigationItem" id="TC0-Qg-WvW">
+                        <barButtonItem key="rightBarButtonItem" title="完了" style="done" id="SXJ-fU-kuY">
                             <connections>
                                 <action selector="onTapCompleteButton:" destination="fEw-I3-QxO" id="3fo-nV-Tuc"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="completeButton" destination="SXJ-fU-kuY" id="srg-6g-e3A"/>
+                        <outlet property="completeButton" destination="SXJ-fU-kuY" id="PTw-Mx-1eb"/>
                         <outlet property="navigationItem" destination="TC0-Qg-WvW" id="25x-HT-Yx9"/>
                     </connections>
                 </tableViewController>
