@@ -14,6 +14,8 @@
 		C0730B9D24FB81F800C4B48F /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0730B9C24FB81F700C4B48F /* LoginViewController.swift */; };
 		C0730BA224FB92A100C4B48F /* ScheduleSelectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0730BA024FB92A100C4B48F /* ScheduleSelectTableViewCell.swift */; };
 		C0730BA324FB92A100C4B48F /* ScheduleSelectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C0730BA124FB92A100C4B48F /* ScheduleSelectTableViewCell.xib */; };
+		C096A9052518C19C006F9AAA /* FireBaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C096A9042518C19C006F9AAA /* FireBaseService.swift */; };
+		C096A9082518C6F0006F9AAA /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C096A9072518C6F0006F9AAA /* UserModel.swift */; };
 		C09D404624FA174500FFAE93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09D404524FA174500FFAE93 /* AppDelegate.swift */; };
 		C09D404D24FA174500FFAE93 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C09D404B24FA174500FFAE93 /* Main.storyboard */; };
 		C09D404F24FA174600FFAE93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C09D404E24FA174600FFAE93 /* Assets.xcassets */; };
@@ -46,6 +48,8 @@
 		C0730B9C24FB81F700C4B48F /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C0730BA024FB92A100C4B48F /* ScheduleSelectTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSelectTableViewCell.swift; sourceTree = "<group>"; };
 		C0730BA124FB92A100C4B48F /* ScheduleSelectTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScheduleSelectTableViewCell.xib; sourceTree = "<group>"; };
+		C096A9042518C19C006F9AAA /* FireBaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseService.swift; sourceTree = "<group>"; };
+		C096A9072518C6F0006F9AAA /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		C09D404224FA174500FFAE93 /* meshiiru.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = meshiiru.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09D404524FA174500FFAE93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C09D404724FA174500FFAE93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -107,6 +111,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		C096A9062518C6C0006F9AAA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				C096A9072518C6F0006F9AAA /* UserModel.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
 		C09D403924FA174500FFAE93 = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +144,7 @@
 		C09D404424FA174500FFAE93 /* meshiiru */ = {
 			isa = PBXGroup;
 			children = (
+				C096A9062518C6C0006F9AAA /* models */,
 				C09D404524FA174500FFAE93 /* AppDelegate.swift */,
 				C0158C3525028FE2009104C5 /* GoogleCalendarService.swift */,
 				C09D404724FA174500FFAE93 /* SceneDelegate.swift */,
@@ -142,6 +155,7 @@
 				C004804724FA21C600E646E6 /* Views */,
 				C09D405024FA174600FFAE93 /* LaunchScreen.storyboard */,
 				C09D405324FA174600FFAE93 /* Info.plist */,
+				C096A9042518C19C006F9AAA /* FireBaseService.swift */,
 			);
 			path = meshiiru;
 			sourceTree = "<group>";
@@ -344,6 +358,8 @@
 			files = (
 				C0A8F24825061AE100AE30EF /* SceneDelegate.swift in Sources */,
 				C09D404624FA174500FFAE93 /* AppDelegate.swift in Sources */,
+				C096A9082518C6F0006F9AAA /* UserModel.swift in Sources */,
+				C096A9052518C19C006F9AAA /* FireBaseService.swift in Sources */,
 				C0730BA224FB92A100C4B48F /* ScheduleSelectTableViewCell.swift in Sources */,
 				C0158C3625028FE2009104C5 /* GoogleCalendarService.swift in Sources */,
 				C004804D24FA279300E646E6 /* ScheduleSelectTableViewController.swift in Sources */,
