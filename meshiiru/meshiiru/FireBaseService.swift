@@ -19,16 +19,16 @@ class FirebaseService {
 
     // ユーザの追加
     func createUser(userId: String, userName: String) {
-        ref.child("/users/\(userId)").setValue(["userId": userId, "userName": userName, "calendars": []])
+        ref.child("/users/\(userId)").setValue(["userId": userId, "userName": userName, "calendars": ""]) // 最初はカレンダーは空
     }
 
     func getUser(userId: String) -> UserModel {
-        var user = UserModel(userId: "", userName: "", calendars: [])
+        var user = UserModel(userId: "", userName: "", calendars: "")
         ref.child("/users/\(userId)").observeSingleEvent(of: .value, with: { (snapshot) in
             let value = snapshot.value as? NSDictionary
             user.userId = value?["userId"] as? String ?? ""
             user.userName = value?["userName"] as? String ?? ""
-            user.calendars = value?["calendars"] as? [String] ?? []
+            user.calendars = value?["calendar"] as? String ?? ""
         }){ (error) in
             print(error.localizedDescription)
         }

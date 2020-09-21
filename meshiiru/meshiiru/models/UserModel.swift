@@ -11,5 +11,5 @@ import Foundation
 struct UserModel {
     var userId: String
     var userName: String
-    var calendars: [String]
+    var calendars: String
 }
